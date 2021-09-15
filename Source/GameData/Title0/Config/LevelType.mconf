@@ -1,0 +1,5 @@
+2
+
+If Value is Set To One The Level Type Will be a normal Platformer Level 
+
+if not The Engine Will Disable Player Drawing and Updating (Ment For a Menu). Level Will Transition After Space Is Pressed
