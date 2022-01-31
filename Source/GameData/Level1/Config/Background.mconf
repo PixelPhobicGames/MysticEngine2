@@ -1,7 +1,0 @@
-1|1|1
-
-if First Value is set to 1 The Engine will Display Images From the Background Folder if Not it Will Display Tile0 as Blank Space
-
-if Second Value is set to 1 it will scroll the Background on movement of the player
-
-The Third Value is the Background Speed [1-9]
