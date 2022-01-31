@@ -1,9 +1,21 @@
+// @ PixelPhobicGames 2022
+
 #include "Renderer.hpp"
 #include <cmath>
 
+
+void CustomLoadBehavior();
+
+void PlayFadeEffect(){
+    //
+}
+
+
 static void LoadTiles(){
+
     WorldData.BackgroundEnabled = false;
     WorldData.BackgroundScrollEnabled = false;
+
     WorldData.Tile0 = LoadTexture(FormatText("GameData/%s/Tiles/Tile0.png" , WorldData.MapName));
     WorldData.Tile1 = LoadTexture(FormatText("GameData/%s/Tiles/Tile1.png" , WorldData.MapName));
     WorldData.Tile2 = LoadTexture(FormatText("GameData/%s/Tiles/Tile2.png" , WorldData.MapName));
@@ -72,8 +84,19 @@ static void LoadTiles(){
 
 }
 
-
+void ScanPlayerSpawn(){
+    for (int x = 0 ; x<= WorldData.Width ; x++){
+        for (int y = 0 ; y <= WorldData.Height ; y++){
+            if (WorldData.Map[y * WorldData.Width + x] == L'@'){
+                MysticEngineCamera.X = x * 20;
+                MysticPlayer.Y = y * 20;
+            }
+        }
+    }
+}
 void ScanMapDimensions(){
+    WorldData.Width = 0;
+    WorldData.Height = 0;
     int Counter = 0;
     for (int i = 0 ; i <= WorldData.Map.size(); i++){
         if (WorldData.Map[i] == L'&'){
@@ -452,6 +475,16 @@ void ScanPlayerAnimationFrames(){
     MysticPlayer.AnimationFrame19 = LoadTexture("GameData/GameAssets/Player/AnimationFrames/Right/Frame4.png");
     MysticPlayer.AnimationFrame20 = LoadTexture("GameData/GameAssets/Player/AnimationFrames/Right/Frame5.png");
 
+    //ETC
+
+    MysticPlayer.ProjectileTexture = LoadTexture("GameData/GameAssets/Player/AnimationFrames/Projectile/Frame1.png");
+    MysticPlayer.ShadowTexture = LoadTexture("GameData/GameAssets/Player/AnimationFrames/Shadow/Shadow.png");
+
+}
+
+void LoadSoundEffects(){
+    MysticPlayer.JumpSound = LoadMusicStream("GameData/GameAssets/Player/SoundEffects/Jump.mp3");
+    MysticPlayer.DeathSound = LoadMusicStream("GameData/GameAssets/Player/SoundEffects/Death.mp3");
 }
 
 auto ReadTile(int X , int Y){
@@ -459,15 +492,15 @@ auto ReadTile(int X , int Y){
 }
 
 
-static void TransitionLevel(){
+auto TransitionLevel(){
     wstring LevelName;
-    wstring EndSign;
+    wstring EndSign = L"*";
 
-    for (int i = 0; i <= 100; i++)WorldData.MapName[i] = '\0';
+    WorldData.MapName[0] = '\0';
 
-    EndSign += L'*';
     char FileFormat[100];
-    strcat(FileFormat,".mpak2"); 
+
+    strcat( FileFormat ,".mpak2" ); 
 
     MysticEngine.LevelId ++;
     
@@ -483,109 +516,120 @@ static void TransitionLevel(){
             }
         }
     }
+
     if (!MysticEngine.GameEnd){
         char MapName[100];
         char MapPath[100];
-        for (int i = 0; i <= 100; i++)MapPath[i] = '\0';
-        for (int i = 0; i <= 100; i++)MapName[i] = '\0';
+
+        MapPath[0] = '\0';
+
+        MapName[0] = '\0';
+
         strcat(MapPath,"GameData/");
-        for (int i = 0 ; i < 6 ; i++){
-            if (LevelName[i] == L'A'){strcat(MapName,"A");}
-            if (LevelName[i] == L'B'){strcat(MapName,"B");}
-            if (LevelName[i] == L'C'){strcat(MapName,"C");}
-            if (LevelName[i] == L'D'){strcat(MapName,"D");}
-            if (LevelName[i] == L'E'){strcat(MapName,"E");}
-            if (LevelName[i] == L'F'){strcat(MapName,"F");}
-            if (LevelName[i] == L'G'){strcat(MapName,"G");}
-            if (LevelName[i] == L'H'){strcat(MapName,"H");}
-            if (LevelName[i] == L'I'){strcat(MapName,"I");}
-            if (LevelName[i] == L'J'){strcat(MapName,"J");}
-            if (LevelName[i] == L'K'){strcat(MapName,"K");}
-            if (LevelName[i] == L'L'){strcat(MapName,"L");}
-            if (LevelName[i] == L'M'){strcat(MapName,"M");}
-            if (LevelName[i] == L'N'){strcat(MapName,"N");}
-            if (LevelName[i] == L'O'){strcat(MapName,"O");}
-            if (LevelName[i] == L'P'){strcat(MapName,"P");}
-            if (LevelName[i] == L'Q'){strcat(MapName,"Q");}
-            if (LevelName[i] == L'R'){strcat(MapName,"R");}
-            if (LevelName[i] == L'S'){strcat(MapName,"S");}
-            if (LevelName[i] == L'T'){strcat(MapName,"T");}
-            if (LevelName[i] == L'U'){strcat(MapName,"U");}
-            if (LevelName[i] == L'V'){strcat(MapName,"V");}
-            if (LevelName[i] == L'W'){strcat(MapName,"W");}
-            if (LevelName[i] == L'X'){strcat(MapName,"X");}
-            if (LevelName[i] == L'Y'){strcat(MapName,"Y");}
-            if (LevelName[i] == L'Z'){strcat(MapName,"Z");}
 
-            if (LevelName[i] == L'a'){strcat(MapName,"a");}
-            if (LevelName[i] == L'b'){strcat(MapName,"b");}
-            if (LevelName[i] == L'c'){strcat(MapName,"c");}
-            if (LevelName[i] == L'd'){strcat(MapName,"d");}
-            if (LevelName[i] == L'e'){strcat(MapName,"e");}
-            if (LevelName[i] == L'f'){strcat(MapName,"f");}
-            if (LevelName[i] == L'g'){strcat(MapName,"g");}
-            if (LevelName[i] == L'h'){strcat(MapName,"h");}
-            if (LevelName[i] == L'i'){strcat(MapName,"i");}
-            if (LevelName[i] == L'j'){strcat(MapName,"j");}
-            if (LevelName[i] == L'k'){strcat(MapName,"k");}
-            if (LevelName[i] == L'l'){strcat(MapName,"l");}
-            if (LevelName[i] == L'm'){strcat(MapName,"m");}
-            if (LevelName[i] == L'n'){strcat(MapName,"n");}
-            if (LevelName[i] == L'o'){strcat(MapName,"o");}
-            if (LevelName[i] == L'p'){strcat(MapName,"p");}
-            if (LevelName[i] == L'q'){strcat(MapName,"q");}
-            if (LevelName[i] == L'r'){strcat(MapName,"r");}
-            if (LevelName[i] == L's'){strcat(MapName,"s");}
-            if (LevelName[i] == L't'){strcat(MapName,"t");}
-            if (LevelName[i] == L'u'){strcat(MapName,"u");}
-            if (LevelName[i] == L'v'){strcat(MapName,"v");}
-            if (LevelName[i] == L'w'){strcat(MapName,"w");}
-            if (LevelName[i] == L'x'){strcat(MapName,"x");}
-            if (LevelName[i] == L'y'){strcat(MapName,"y");}
-            if (LevelName[i] == L'z'){strcat(MapName,"z");}
+        if (MysticEngine.LevelId == 0){
+            for (int i = 0 ; i < 6 ; i++){
+                if (LevelName[i] == L'A'){strcat(MapName,"A");}
+                if (LevelName[i] == L'B'){strcat(MapName,"B");}
+                if (LevelName[i] == L'C'){strcat(MapName,"C");}
+                if (LevelName[i] == L'D'){strcat(MapName,"D");}
+                if (LevelName[i] == L'E'){strcat(MapName,"E");}
+                if (LevelName[i] == L'F'){strcat(MapName,"F");}
+                if (LevelName[i] == L'G'){strcat(MapName,"G");}
+                if (LevelName[i] == L'H'){strcat(MapName,"H");}
+                if (LevelName[i] == L'I'){strcat(MapName,"I");}
+                if (LevelName[i] == L'J'){strcat(MapName,"J");}
+                if (LevelName[i] == L'K'){strcat(MapName,"K");}
+                if (LevelName[i] == L'L'){strcat(MapName,"L");}
+                if (LevelName[i] == L'M'){strcat(MapName,"M");}
+                if (LevelName[i] == L'N'){strcat(MapName,"N");}
+                if (LevelName[i] == L'O'){strcat(MapName,"O");}
+                if (LevelName[i] == L'P'){strcat(MapName,"P");}
+                if (LevelName[i] == L'Q'){strcat(MapName,"Q");}
+                if (LevelName[i] == L'R'){strcat(MapName,"R");}
+                if (LevelName[i] == L'S'){strcat(MapName,"S");}
+                if (LevelName[i] == L'T'){strcat(MapName,"T");}
+                if (LevelName[i] == L'U'){strcat(MapName,"U");}
+                if (LevelName[i] == L'V'){strcat(MapName,"V");}
+                if (LevelName[i] == L'W'){strcat(MapName,"W");}
+                if (LevelName[i] == L'X'){strcat(MapName,"X");}
+                if (LevelName[i] == L'Y'){strcat(MapName,"Y");}
+                if (LevelName[i] == L'Z'){strcat(MapName,"Z");}
 
-            if (LevelName[i] == L'1'){strcat(MapName,"1");}
-            if (LevelName[i] == L'2'){strcat(MapName,"2");}
-            if (LevelName[i] == L'3'){strcat(MapName,"3");}
-            if (LevelName[i] == L'4'){strcat(MapName,"4");}
-            if (LevelName[i] == L'5'){strcat(MapName,"5");}
-            if (LevelName[i] == L'6'){strcat(MapName,"6");}
-            if (LevelName[i] == L'7'){strcat(MapName,"7");}
-            if (LevelName[i] == L'8'){strcat(MapName,"8");}
-            if (LevelName[i] == L'9'){strcat(MapName,"9");}
-            if (LevelName[i] == L'0'){strcat(MapName,"0");}
+                if (LevelName[i] == L'a'){strcat(MapName,"a");}
+                if (LevelName[i] == L'b'){strcat(MapName,"b");}
+                if (LevelName[i] == L'c'){strcat(MapName,"c");}
+                if (LevelName[i] == L'd'){strcat(MapName,"d");}
+                if (LevelName[i] == L'e'){strcat(MapName,"e");}
+                if (LevelName[i] == L'f'){strcat(MapName,"f");}
+                if (LevelName[i] == L'g'){strcat(MapName,"g");}
+                if (LevelName[i] == L'h'){strcat(MapName,"h");}
+                if (LevelName[i] == L'i'){strcat(MapName,"i");}
+                if (LevelName[i] == L'j'){strcat(MapName,"j");}
+                if (LevelName[i] == L'k'){strcat(MapName,"k");}
+                if (LevelName[i] == L'l'){strcat(MapName,"l");}
+                if (LevelName[i] == L'm'){strcat(MapName,"m");}
+                if (LevelName[i] == L'n'){strcat(MapName,"n");}
+                if (LevelName[i] == L'o'){strcat(MapName,"o");}
+                if (LevelName[i] == L'p'){strcat(MapName,"p");}
+                if (LevelName[i] == L'q'){strcat(MapName,"q");}
+                if (LevelName[i] == L'r'){strcat(MapName,"r");}
+                if (LevelName[i] == L's'){strcat(MapName,"s");}
+                if (LevelName[i] == L't'){strcat(MapName,"t");}
+                if (LevelName[i] == L'u'){strcat(MapName,"u");}
+                if (LevelName[i] == L'v'){strcat(MapName,"v");}
+                if (LevelName[i] == L'w'){strcat(MapName,"w");}
+                if (LevelName[i] == L'x'){strcat(MapName,"x");}
+                if (LevelName[i] == L'y'){strcat(MapName,"y");}
+                if (LevelName[i] == L'z'){strcat(MapName,"z");}
 
-            if (LevelName[i] == L'!'){strcat(MapName,"!");}
-            if (LevelName[i] == L'@'){strcat(MapName,"@");}
-            if (LevelName[i] == L'#'){strcat(MapName,"#");}
-            if (LevelName[i] == L'$'){strcat(MapName,"$");}
-            if (LevelName[i] == L'%'){strcat(MapName,"%");}
-            if (LevelName[i] == L'^'){strcat(MapName,"^");}
-            if (LevelName[i] == L'&'){strcat(MapName,"&");}
-            if (LevelName[i] == L'*'){strcat(MapName,"*");}
-            if (LevelName[i] == L'('){strcat(MapName,"(");}
-            if (LevelName[i] == L')'){strcat(MapName,")");}
+                if (LevelName[i] == L'1'){strcat(MapName,"1");}
+                if (LevelName[i] == L'2'){strcat(MapName,"2");}
+                if (LevelName[i] == L'3'){strcat(MapName,"3");}
+                if (LevelName[i] == L'4'){strcat(MapName,"4");}
+                if (LevelName[i] == L'5'){strcat(MapName,"5");}
+                if (LevelName[i] == L'6'){strcat(MapName,"6");}
+                if (LevelName[i] == L'7'){strcat(MapName,"7");}
+                if (LevelName[i] == L'8'){strcat(MapName,"8");}
+                if (LevelName[i] == L'9'){strcat(MapName,"9");}
+                if (LevelName[i] == L'0'){strcat(MapName,"0");}
+
+                if (LevelName[i] == L'!'){strcat(MapName,"!");}
+                if (LevelName[i] == L'@'){strcat(MapName,"@");}
+                if (LevelName[i] == L'#'){strcat(MapName,"#");}
+                if (LevelName[i] == L'$'){strcat(MapName,"$");}
+                if (LevelName[i] == L'%'){strcat(MapName,"%");}
+                if (LevelName[i] == L'^'){strcat(MapName,"^");}
+                if (LevelName[i] == L'&'){strcat(MapName,"&");}
+                if (LevelName[i] == L'*'){strcat(MapName,"*");}
+                if (LevelName[i] == L'('){strcat(MapName,"(");}
+                if (LevelName[i] == L')'){strcat(MapName,")");}
+            }
         }
+        else {
+            // Hacky Fix 
+            strcat(MapName,FormatText("Level%i" , MysticEngine.LevelId));
+        }
+
         strcat(MapPath,MapName);
         strcat(MapPath,"/");
         strcat(MapPath,MapName);
         strcat(MapPath,".mpak2");
 
         if (MysticEngine.ME1Compatable){
-            
             for (int i = 0; i <= 512*10;i++){
                 WorldData.Map += L'0';
             }
-
             WorldData.Map = LoadFile(MapPath);
-
         }
         else {
+            WorldData.Map[0] = L'\0';
             WorldData.Map = LoadFile(MapPath);
         }
 
         ScanMapDimensions();
 
+        WorldData.MapName[0] = '\0';
 
         strcat(WorldData.MapName,MapName);
 
@@ -605,6 +649,9 @@ static void TransitionLevel(){
         wcout << "Software By PixelPhobicGames - 2021" << "\n";
         exit(0);
     }
+
+    ScanPlayerSpawn();
+    CustomLoadBehavior();
 }
 
 char WstringToChar(wchar_t Data){
@@ -779,18 +826,6 @@ char WstringToChar(wchar_t Data){
     }
 }
 
-void LoadTitleCaption(){ // Not Done
-    wstring Data;
-    Data = LoadFile("MysticEngine/Window/WindowCaption.mconf");
-    
-    for (int i = 0 ; i <= Data.size() ; i ++){
-        MysticEngine.WindowCaption += WstringToChar(Data[i]);
-    }
-    cout << MysticEngine.WindowCaption << "\n";
-
-    
-}
-
 void ScanFps(){
     wstring Data;
     Data = LoadFile("MysticEngine/Global/Config/Fps.mconf");
@@ -868,7 +903,6 @@ void ScanFps(){
 }
 
 static void MysticEngineInit(){
-    LoadTitleCaption();
 
     MysticEngine.WindowScale = 1.0f;
     MysticEngine.MapDataConfig = LoadFile("GameData/Config/MasterLevelConfig.mconf");
@@ -883,7 +917,17 @@ static void MysticEngineInit(){
     MysticPlayer.Width = 0;
     MysticPlayer.Height = 0;
     MysticPlayer.AnimationTicker = 0;
+    MysticPlayer.Visable = true;
+    MysticPlayer.MovementEnabled = true;
+    MysticPlayer.ProjectileRotation = 0;
+    MysticPlayer.ProjectileTrigger = false;
+    MysticPlayer.ProjectileX = 0;
+    MysticPlayer.ProjectileY = 0;
+    MysticPlayer.ProjectileDirection = 1;
+
     MysticEngine.FirstLoad = true;
+
+    wcout << MysticEngine.MapDataConfig << "\n";
 
 
     if (LoadConfigurationFile("MysticEngine/Global/Config/Compatability.mconf") == L'1'){
@@ -901,7 +945,7 @@ static void MysticEngineInit(){
         MysticEngine.EditMode = true;
     }
     if (LoadConfigurationFile("MysticEngine/Global/Config/Debug.mconf") == L'1'){
-        MysticEngine.Debug= true;
+        MysticEngine.Debug = true;
     }
     else {
         MysticEngine.Debug = false;
@@ -955,18 +999,28 @@ static void MysticEngineInit(){
     MysticPlayer.JumpCounter = 20;
     
     TransitionLevel();      
+
     InitWindow(MysticEngine.XResolution * MysticEngine.WindowScale, MysticEngine.YResolution * MysticEngine.WindowScale, "MysticEngine2" );
     InitAudioDevice();
+
+    Image Icon = LoadImage("MysticEngine/Icon/Icon.png");
+
+    SetWindowIcon(Icon);   
 
     if (MysticEngine.ME1Compatable){
         SetWindowTitle("MysticEngine2: M1BWC (Classic) Mode ");   
     }
+
+    GlobalFont = LoadFont("MysticEngine/Font/Font.ttf");
+
     ScanFps();
     ScanPlayerAnimationSpeed();
     ScanPlayerAnimationFrames();
     LoadTiles();
     ScanPlayerDimesions();
     ScanCameraSpeed();
+    LoadSoundEffects();
+
     MysticPlayer.X = (MysticEngine.XResolution / 2) - 20;
     MysticPlayer.Y = (MysticEngine.YResolution / 2) + MysticPlayer.YOffset;
 
@@ -976,229 +1030,273 @@ static void MysticEngineInit(){
         SetWindowSize(MysticEngine.XResolution , MysticEngine.YResolution);
     }
     PlayMusicStream(WorldData.Theme);
+    PlayFadeEffect();
+}
+
+void SoundEffectsUpdate(){
+    UpdateMusicStream(MysticPlayer.JumpSound);
+    UpdateMusicStream(MysticPlayer.DeathSound);
 }
 
 void CoreUpdate(){
+    SoundEffectsUpdate();
 
     if (MysticEngine.LevelType == 1){
 
-        switch (MysticEngineCamera.Direction)
-        {
-            case 1:
-                if (MysticPlayer.AnimationTicker >= 0 && MysticPlayer.AnimationTicker <= 20){
-                    DrawTextureEx(MysticPlayer.AnimationFrame6 , {(MysticPlayer.X + 10 - MysticPlayer.Width/2)* MysticEngine.WindowScale, ((MysticPlayer.Y - (MysticPlayer.Height - 20) - 2) )* MysticEngine.WindowScale} , 0 ,MysticEngine.WindowScale, WHITE);
-                }
-                if (MysticPlayer.AnimationTicker >= 20 && MysticPlayer.AnimationTicker <= 40){
-                    DrawTextureEx(MysticPlayer.AnimationFrame7 , {(MysticPlayer.X + 10 - MysticPlayer.Width/2)* MysticEngine.WindowScale, ((MysticPlayer.Y - (MysticPlayer.Height - 20) - 2) )* MysticEngine.WindowScale} , 0 ,MysticEngine.WindowScale, WHITE);
-                }
-                if (MysticPlayer.AnimationTicker >= 40 && MysticPlayer.AnimationTicker <= 60){
-                    DrawTextureEx(MysticPlayer.AnimationFrame8 , {(MysticPlayer.X + 10 - MysticPlayer.Width/2)* MysticEngine.WindowScale, ((MysticPlayer.Y - (MysticPlayer.Height - 20) - 2) )* MysticEngine.WindowScale} , 0 ,MysticEngine.WindowScale, WHITE);
-                }
-                if (MysticPlayer.AnimationTicker >= 60 && MysticPlayer.AnimationTicker <= 80){
-                    DrawTextureEx(MysticPlayer.AnimationFrame9 , {(MysticPlayer.X + 10 - MysticPlayer.Width/2)* MysticEngine.WindowScale, ((MysticPlayer.Y - (MysticPlayer.Height - 20) - 2) )* MysticEngine.WindowScale} , 0 ,MysticEngine.WindowScale, WHITE);
-                }
-                if (MysticPlayer.AnimationTicker >= 80 && MysticPlayer.AnimationTicker <= 100){
-                    DrawTextureEx(MysticPlayer.AnimationFrame10 , {(MysticPlayer.X + 10 - MysticPlayer.Width/2)* MysticEngine.WindowScale, ((MysticPlayer.Y - (MysticPlayer.Height - 20) - 2) )* MysticEngine.WindowScale} , 0 ,MysticEngine.WindowScale, WHITE);
-                }
-                break;
-            case 2:
-                if (IsKeyDown(KEY_RIGHT)){
+        if (MysticPlayer.Visable){
+
+            switch (MysticEngineCamera.Direction)
+            {
+                case 1:
                     if (MysticPlayer.AnimationTicker >= 0 && MysticPlayer.AnimationTicker <= 20){
+                        DrawTextureEx(MysticPlayer.AnimationFrame6 , {(MysticPlayer.X + 10 - MysticPlayer.Width/2)* MysticEngine.WindowScale, ((MysticPlayer.Y - (MysticPlayer.Height - 20) - 2) )* MysticEngine.WindowScale} , 0 ,MysticEngine.WindowScale, WHITE);
+                    }
+                    if (MysticPlayer.AnimationTicker >= 20 && MysticPlayer.AnimationTicker <= 40){
+                        DrawTextureEx(MysticPlayer.AnimationFrame7 , {(MysticPlayer.X + 10 - MysticPlayer.Width/2)* MysticEngine.WindowScale, ((MysticPlayer.Y - (MysticPlayer.Height - 20) - 2) )* MysticEngine.WindowScale} , 0 ,MysticEngine.WindowScale, WHITE);
+                    }
+                    if (MysticPlayer.AnimationTicker >= 40 && MysticPlayer.AnimationTicker <= 60){
+                        DrawTextureEx(MysticPlayer.AnimationFrame8 , {(MysticPlayer.X + 10 - MysticPlayer.Width/2)* MysticEngine.WindowScale, ((MysticPlayer.Y - (MysticPlayer.Height - 20) - 2) )* MysticEngine.WindowScale} , 0 ,MysticEngine.WindowScale, WHITE);
+                    }
+                    if (MysticPlayer.AnimationTicker >= 60 && MysticPlayer.AnimationTicker <= 80){
+                        DrawTextureEx(MysticPlayer.AnimationFrame9 , {(MysticPlayer.X + 10 - MysticPlayer.Width/2)* MysticEngine.WindowScale, ((MysticPlayer.Y - (MysticPlayer.Height - 20) - 2) )* MysticEngine.WindowScale} , 0 ,MysticEngine.WindowScale, WHITE);
+                    }
+                    if (MysticPlayer.AnimationTicker >= 80 && MysticPlayer.AnimationTicker <= 100){
+                        DrawTextureEx(MysticPlayer.AnimationFrame10 , {(MysticPlayer.X + 10 - MysticPlayer.Width/2)* MysticEngine.WindowScale, ((MysticPlayer.Y - (MysticPlayer.Height - 20) - 2) )* MysticEngine.WindowScale} , 0 ,MysticEngine.WindowScale, WHITE);
+                    }
+                    break;
+                case 2:
+                    if (IsKeyDown(KEY_RIGHT)){
+                        if (MysticPlayer.AnimationTicker >= 0 && MysticPlayer.AnimationTicker <= 20){
+                            DrawTextureEx(MysticPlayer.AnimationFrame16 , {(MysticPlayer.X + 10 - MysticPlayer.Width/2)* MysticEngine.WindowScale, ((MysticPlayer.Y - (MysticPlayer.Height - 20) - 2) )* MysticEngine.WindowScale} , 0 ,MysticEngine.WindowScale, WHITE);
+                        }
+                        if (MysticPlayer.AnimationTicker >= 20 && MysticPlayer.AnimationTicker <= 40){
+                            DrawTextureEx(MysticPlayer.AnimationFrame17 , {(MysticPlayer.X + 10 - MysticPlayer.Width/2)* MysticEngine.WindowScale, ((MysticPlayer.Y - (MysticPlayer.Height - 20) - 2) )* MysticEngine.WindowScale} , 0 ,MysticEngine.WindowScale, WHITE);
+                        }
+                        if (MysticPlayer.AnimationTicker >= 40 && MysticPlayer.AnimationTicker <= 60){
+                            DrawTextureEx(MysticPlayer.AnimationFrame18 , {(MysticPlayer.X + 10 - MysticPlayer.Width/2)* MysticEngine.WindowScale, ((MysticPlayer.Y - (MysticPlayer.Height - 20) - 2) )* MysticEngine.WindowScale} , 0 ,MysticEngine.WindowScale, WHITE);
+                        }
+                        if (MysticPlayer.AnimationTicker >= 60 && MysticPlayer.AnimationTicker <= 80){
+                            DrawTextureEx(MysticPlayer.AnimationFrame19 , {(MysticPlayer.X + 10 - MysticPlayer.Width/2)* MysticEngine.WindowScale, ((MysticPlayer.Y - (MysticPlayer.Height - 20) - 2) )* MysticEngine.WindowScale} , 0 ,MysticEngine.WindowScale, WHITE);
+                        }
+                        if (MysticPlayer.AnimationTicker >= 80 && MysticPlayer.AnimationTicker <= 100){
+                            DrawTextureEx(MysticPlayer.AnimationFrame20 , {(MysticPlayer.X + 10 - MysticPlayer.Width/2)* MysticEngine.WindowScale, ((MysticPlayer.Y - (MysticPlayer.Height - 20) - 2) )* MysticEngine.WindowScale} , 0 ,MysticEngine.WindowScale, WHITE);
+                        }
+                    }
+                    else {
                         DrawTextureEx(MysticPlayer.AnimationFrame16 , {(MysticPlayer.X + 10 - MysticPlayer.Width/2)* MysticEngine.WindowScale, ((MysticPlayer.Y - (MysticPlayer.Height - 20) - 2) )* MysticEngine.WindowScale} , 0 ,MysticEngine.WindowScale, WHITE);
                     }
+                    break;
+                case 3:
+                    if (MysticPlayer.AnimationTicker >= 0 && MysticPlayer.AnimationTicker <= 20){
+                        DrawTextureEx(MysticPlayer.AnimationFrame1 , {(MysticPlayer.X + 10 - MysticPlayer.Width/2)* MysticEngine.WindowScale, ((MysticPlayer.Y - (MysticPlayer.Height - 20) - 2) )* MysticEngine.WindowScale} , 0 ,MysticEngine.WindowScale, WHITE);
+                    }
                     if (MysticPlayer.AnimationTicker >= 20 && MysticPlayer.AnimationTicker <= 40){
-                        DrawTextureEx(MysticPlayer.AnimationFrame17 , {(MysticPlayer.X + 10 - MysticPlayer.Width/2)* MysticEngine.WindowScale, ((MysticPlayer.Y - (MysticPlayer.Height - 20) - 2) )* MysticEngine.WindowScale} , 0 ,MysticEngine.WindowScale, WHITE);
+                        DrawTextureEx(MysticPlayer.AnimationFrame2 , {(MysticPlayer.X + 10 - MysticPlayer.Width/2)* MysticEngine.WindowScale, ((MysticPlayer.Y - (MysticPlayer.Height - 20) - 2) )* MysticEngine.WindowScale} , 0 ,MysticEngine.WindowScale, WHITE);
                     }
                     if (MysticPlayer.AnimationTicker >= 40 && MysticPlayer.AnimationTicker <= 60){
-                        DrawTextureEx(MysticPlayer.AnimationFrame18 , {(MysticPlayer.X + 10 - MysticPlayer.Width/2)* MysticEngine.WindowScale, ((MysticPlayer.Y - (MysticPlayer.Height - 20) - 2) )* MysticEngine.WindowScale} , 0 ,MysticEngine.WindowScale, WHITE);
+                        DrawTextureEx(MysticPlayer.AnimationFrame3 , {(MysticPlayer.X + 10 - MysticPlayer.Width/2)* MysticEngine.WindowScale, ((MysticPlayer.Y - (MysticPlayer.Height - 20) - 2) )* MysticEngine.WindowScale} , 0 ,MysticEngine.WindowScale, WHITE);
                     }
                     if (MysticPlayer.AnimationTicker >= 60 && MysticPlayer.AnimationTicker <= 80){
-                        DrawTextureEx(MysticPlayer.AnimationFrame19 , {(MysticPlayer.X + 10 - MysticPlayer.Width/2)* MysticEngine.WindowScale, ((MysticPlayer.Y - (MysticPlayer.Height - 20) - 2) )* MysticEngine.WindowScale} , 0 ,MysticEngine.WindowScale, WHITE);
+                        DrawTextureEx(MysticPlayer.AnimationFrame4 , {(MysticPlayer.X + 10 - MysticPlayer.Width/2)* MysticEngine.WindowScale, ((MysticPlayer.Y - (MysticPlayer.Height - 20) - 2) )* MysticEngine.WindowScale} , 0 ,MysticEngine.WindowScale, WHITE);
                     }
                     if (MysticPlayer.AnimationTicker >= 80 && MysticPlayer.AnimationTicker <= 100){
-                        DrawTextureEx(MysticPlayer.AnimationFrame20 , {(MysticPlayer.X + 10 - MysticPlayer.Width/2)* MysticEngine.WindowScale, ((MysticPlayer.Y - (MysticPlayer.Height - 20) - 2) )* MysticEngine.WindowScale} , 0 ,MysticEngine.WindowScale, WHITE);
+                        DrawTextureEx(MysticPlayer.AnimationFrame5 , {(MysticPlayer.X + 10 - MysticPlayer.Width/2)* MysticEngine.WindowScale, ((MysticPlayer.Y - (MysticPlayer.Height - 20) - 2) )* MysticEngine.WindowScale} , 0 ,MysticEngine.WindowScale, WHITE);
                     }
-                }
-                else {
-                    DrawTextureEx(MysticPlayer.AnimationFrame16 , {(MysticPlayer.X + 10 - MysticPlayer.Width/2)* MysticEngine.WindowScale, ((MysticPlayer.Y - (MysticPlayer.Height - 20) - 2) )* MysticEngine.WindowScale} , 0 ,MysticEngine.WindowScale, WHITE);
-                }
-                break;
-            case 3:
-                if (MysticPlayer.AnimationTicker >= 0 && MysticPlayer.AnimationTicker <= 20){
-                    DrawTextureEx(MysticPlayer.AnimationFrame1 , {(MysticPlayer.X + 10 - MysticPlayer.Width/2)* MysticEngine.WindowScale, ((MysticPlayer.Y - (MysticPlayer.Height - 20) - 2) )* MysticEngine.WindowScale} , 0 ,MysticEngine.WindowScale, WHITE);
-                }
-                if (MysticPlayer.AnimationTicker >= 20 && MysticPlayer.AnimationTicker <= 40){
-                DrawTextureEx(MysticPlayer.AnimationFrame2 , {(MysticPlayer.X + 10 - MysticPlayer.Width/2)* MysticEngine.WindowScale, ((MysticPlayer.Y - (MysticPlayer.Height - 20) - 2) )* MysticEngine.WindowScale} , 0 ,MysticEngine.WindowScale, WHITE);
-                }
-                if (MysticPlayer.AnimationTicker >= 40 && MysticPlayer.AnimationTicker <= 60){
-                    DrawTextureEx(MysticPlayer.AnimationFrame3 , {(MysticPlayer.X + 10 - MysticPlayer.Width/2)* MysticEngine.WindowScale, ((MysticPlayer.Y - (MysticPlayer.Height - 20) - 2) )* MysticEngine.WindowScale} , 0 ,MysticEngine.WindowScale, WHITE);
-                }
-                if (MysticPlayer.AnimationTicker >= 60 && MysticPlayer.AnimationTicker <= 80){
-                    DrawTextureEx(MysticPlayer.AnimationFrame4 , {(MysticPlayer.X + 10 - MysticPlayer.Width/2)* MysticEngine.WindowScale, ((MysticPlayer.Y - (MysticPlayer.Height - 20) - 2) )* MysticEngine.WindowScale} , 0 ,MysticEngine.WindowScale, WHITE);
-                }
-                if (MysticPlayer.AnimationTicker >= 80 && MysticPlayer.AnimationTicker <= 100){
-                    DrawTextureEx(MysticPlayer.AnimationFrame5 , {(MysticPlayer.X + 10 - MysticPlayer.Width/2)* MysticEngine.WindowScale, ((MysticPlayer.Y - (MysticPlayer.Height - 20) - 2) )* MysticEngine.WindowScale} , 0 ,MysticEngine.WindowScale, WHITE);
-                }
-                break;
-            case 4:
+                    break;
+                case 4:
 
-                if (IsKeyDown(KEY_LEFT)){
-                    if (MysticPlayer.AnimationTicker >= 0 && MysticPlayer.AnimationTicker <= 20){
+                    if (IsKeyDown(KEY_LEFT)){
+                        if (MysticPlayer.AnimationTicker >= 0 && MysticPlayer.AnimationTicker <= 20){
+                            DrawTextureEx(MysticPlayer.AnimationFrame11 , {(MysticPlayer.X + 10 - MysticPlayer.Width/2)* MysticEngine.WindowScale, ((MysticPlayer.Y - (MysticPlayer.Height - 20) - 2) )* MysticEngine.WindowScale} , 0 ,MysticEngine.WindowScale, WHITE);
+                        }
+                        if (MysticPlayer.AnimationTicker >= 20 && MysticPlayer.AnimationTicker <= 40){
+                            DrawTextureEx(MysticPlayer.AnimationFrame12 , {(MysticPlayer.X + 10 - MysticPlayer.Width/2)* MysticEngine.WindowScale, ((MysticPlayer.Y - (MysticPlayer.Height - 20) - 2) )* MysticEngine.WindowScale} , 0 ,MysticEngine.WindowScale, WHITE);
+                        }
+                        if (MysticPlayer.AnimationTicker >= 40 && MysticPlayer.AnimationTicker <= 60){
+                            DrawTextureEx(MysticPlayer.AnimationFrame13 , {(MysticPlayer.X + 10 - MysticPlayer.Width/2)* MysticEngine.WindowScale, ((MysticPlayer.Y - (MysticPlayer.Height - 20) - 2) )* MysticEngine.WindowScale} , 0 ,MysticEngine.WindowScale, WHITE);
+                        }
+                        if (MysticPlayer.AnimationTicker >= 60 && MysticPlayer.AnimationTicker <= 80){
+                            DrawTextureEx(MysticPlayer.AnimationFrame14 , {(MysticPlayer.X + 10 - MysticPlayer.Width/2)* MysticEngine.WindowScale, ((MysticPlayer.Y - (MysticPlayer.Height - 20) - 2) )* MysticEngine.WindowScale} , 0 ,MysticEngine.WindowScale, WHITE);
+                        }
+                        if (MysticPlayer.AnimationTicker >= 80 && MysticPlayer.AnimationTicker <= 100){
+                            DrawTextureEx(MysticPlayer.AnimationFrame15 , {(MysticPlayer.X + 10 - MysticPlayer.Width/2)* MysticEngine.WindowScale, ((MysticPlayer.Y - (MysticPlayer.Height - 20) - 2) )* MysticEngine.WindowScale} , 0 ,MysticEngine.WindowScale, WHITE);
+                        }
+                    }
+                    else{
                         DrawTextureEx(MysticPlayer.AnimationFrame11 , {(MysticPlayer.X + 10 - MysticPlayer.Width/2)* MysticEngine.WindowScale, ((MysticPlayer.Y - (MysticPlayer.Height - 20) - 2) )* MysticEngine.WindowScale} , 0 ,MysticEngine.WindowScale, WHITE);
                     }
-                    if (MysticPlayer.AnimationTicker >= 20 && MysticPlayer.AnimationTicker <= 40){
-                        DrawTextureEx(MysticPlayer.AnimationFrame12 , {(MysticPlayer.X + 10 - MysticPlayer.Width/2)* MysticEngine.WindowScale, ((MysticPlayer.Y - (MysticPlayer.Height - 20) - 2) )* MysticEngine.WindowScale} , 0 ,MysticEngine.WindowScale, WHITE);
-                    }
-                    if (MysticPlayer.AnimationTicker >= 40 && MysticPlayer.AnimationTicker <= 60){
-                        DrawTextureEx(MysticPlayer.AnimationFrame13 , {(MysticPlayer.X + 10 - MysticPlayer.Width/2)* MysticEngine.WindowScale, ((MysticPlayer.Y - (MysticPlayer.Height - 20) - 2) )* MysticEngine.WindowScale} , 0 ,MysticEngine.WindowScale, WHITE);
-                    }
-                    if (MysticPlayer.AnimationTicker >= 60 && MysticPlayer.AnimationTicker <= 80){
-                        DrawTextureEx(MysticPlayer.AnimationFrame14 , {(MysticPlayer.X + 10 - MysticPlayer.Width/2)* MysticEngine.WindowScale, ((MysticPlayer.Y - (MysticPlayer.Height - 20) - 2) )* MysticEngine.WindowScale} , 0 ,MysticEngine.WindowScale, WHITE);
-                    }
-                    if (MysticPlayer.AnimationTicker >= 80 && MysticPlayer.AnimationTicker <= 100){
-                        DrawTextureEx(MysticPlayer.AnimationFrame15 , {(MysticPlayer.X + 10 - MysticPlayer.Width/2)* MysticEngine.WindowScale, ((MysticPlayer.Y - (MysticPlayer.Height - 20) - 2) )* MysticEngine.WindowScale} , 0 ,MysticEngine.WindowScale, WHITE);
-                    }
-                }
-                else{
-                    DrawTextureEx(MysticPlayer.AnimationFrame11 , {(MysticPlayer.X + 10 - MysticPlayer.Width/2)* MysticEngine.WindowScale, ((MysticPlayer.Y - (MysticPlayer.Height - 20) - 2) )* MysticEngine.WindowScale} , 0 ,MysticEngine.WindowScale, WHITE);
-                }
-                
-                break;
-        }
-        if (MysticEngineCamera.Y % 2 == 1){
-            MysticEngineCamera.Y --;
-        }
-
-        if (!MysticPlayer.JumpTrigger){
-            if (ReadTile((MysticEngineCamera.X + MysticPlayer.X) / 20, (MysticEngineCamera.Y + MysticPlayer.Y + 20) / 20) != L'0'){
-                if (MysticEngineCamera.Y % 20 == 0){
-                    MysticEngineCamera.Y --;
-                }
-            }
-        }
-        if (MysticEngineCamera.Y % 2 == 1){
-            MysticEngineCamera.Y --;
-        }
-
-
-        for (int i = 0 ; i <= WorldData.Height + 20 ; i += 20){
-            if (MysticEngineCamera.Y == i + 2){
-                MysticEngineCamera.Y = i;
+                    
+                    break;
             }
         }
 
-        if (IsKeyDown(KEY_LEFT) == false && IsKeyDown(KEY_RIGHT) == false && IsKeyDown(KEY_UP) == false && IsKeyDown(KEY_DOWN) == false){
-            if (MysticEngineCamera.XAcceleration != 0){
-                MysticEngineCamera.XAcceleration --;
-            }
-        }
-        else{
-            if (MysticEngineCamera.XAcceleration != 30){
-                MysticEngineCamera.XAcceleration ++;
-            }
+        if(MysticPlayer.IsGrounded){
+            DrawTextureEx(MysticPlayer.ShadowTexture , {(MysticPlayer.X + 10 - MysticPlayer.Width/2)* MysticEngine.WindowScale, ((MysticPlayer.Y - (MysticPlayer.Height - 20) - 2) )* MysticEngine.WindowScale} , 0 ,MysticEngine.WindowScale, WHITE);
         }
 
-        if (MysticEngineCamera.X >= 0){
-            if (IsKeyDown(KEY_LEFT)){
-                if (WorldData.BackgroundEnabled){
-                    if (WorldData.BackgroundScrollEnabled){
-                        MysticEngine.BackgroundXScroll += MysticEngine.BackgroundXScrollSpeed;
-                    }
-                }
-                MysticEngineCamera.X -= MysticEngineCamera.Speed;
-                MysticEngineCamera.Direction = 4;
-            }
-            if (MysticEngineCamera.Direction == 4)MysticEngineCamera.X -= MysticEngineCamera.XAcceleration / 3;
-        }
-        else {
-            MysticEngineCamera.X = 0;
-        }
-        if (MysticEngineCamera.X <= WorldData.Width * 20){
-            if (IsKeyDown(KEY_RIGHT)){
-                if (WorldData.BackgroundEnabled){
-                    if (WorldData.BackgroundScrollEnabled){
-                        MysticEngine.BackgroundXScroll -= MysticEngine.BackgroundXScrollSpeed;
-                    }
-                }
-                MysticEngineCamera.X += MysticEngineCamera.Speed;
-                MysticEngineCamera.Direction = 2;
-            }
-            if (MysticEngineCamera.Direction == 2)MysticEngineCamera.X += MysticEngineCamera.XAcceleration / 3;
-        }
 
-        if (MysticEngineCamera.Y >= 0){
-            if (IsKeyDown(KEY_UP) && !MysticPlayer.JumpTrigger){
-                MysticPlayer.JumpTrigger = true;
-            }
 
-            if (MysticPlayer.JumpTrigger){
-                MysticEngineCamera.Direction = 1;
-                if (MysticPlayer.JumpCounter >= -10) {
-
-                    MysticEngineCamera.Y -= (MysticPlayer.JumpCounter * abs(MysticPlayer.JumpCounter)) * .05;
-
-                    MysticPlayer.JumpCounter -= 1;
-                }
-                else {
-                    MysticEngineCamera.Direction = 3;
-                    MysticPlayer.JumpCounter = 20;
-                    MysticPlayer.JumpTrigger = false;
-                }
-            }
-        }
-        else {
-            MysticEngineCamera.Y = 0;
-        }
-        if (MysticEngineCamera.Y <= WorldData.Height * 20){
-            if (MysticPlayer.JumpTrigger){
-                if (ReadTile((MysticEngineCamera.X + MysticPlayer.X) / 20, (MysticEngineCamera.Y + MysticPlayer.Y - (MysticPlayer.Height-20)) / 20) != L'0'){
-                    MysticEngineCamera.Y += 4;
-                    MysticEngineCamera.Y += (MysticPlayer.JumpCounter * abs(MysticPlayer.JumpCounter)) * .05;
-                }
-            }
-            if (MysticEngineCamera.Direction == 4){
-                if (ReadTile((MysticEngineCamera.X + MysticPlayer.X + 20) / 20, (MysticEngineCamera.Y + MysticPlayer.Y + 20) / 20) == L'0' ){
-                    if(!MysticPlayer.JumpTrigger){
-                        MysticEngineCamera.Y += 4;
-                        MysticEngineCamera.Direction = 3;
+        if (MysticPlayer.MovementEnabled){
+            for(int x = 0; x <= MysticPlayer.Width / 20 ; x++){
+                for(int y = 0; y <= MysticPlayer.Height / 20 ; y++){
+                    if (ReadTile((MysticEngineCamera.X + MysticPlayer.X + x * 20) / 20, (MysticEngineCamera.Y + MysticPlayer.Y + y * 20) / 20) == L'%'){
+                        PlayFadeEffect();
+                        MysticPlayer.X = (MysticEngine.XResolution / 2) - 20;
+                        MysticPlayer.Y = (MysticEngine.YResolution / 2) + MysticPlayer.YOffset;
+                        MysticEngineCamera.X = 0;
+                        MysticEngineCamera.Y = 0;
+                        MysticEngine.BackgroundXScroll = 0;
+                        StopMusicStream(WorldData.Theme);
+                        TransitionLevel();      
+                        LoadTiles();
+                        PlayMusicStream(WorldData.Theme); 
                         
                     }
                 }
-                for (int i = 0 ; i <= MysticPlayer.Height / 20; i ++){
-                    if (ReadTile((MysticEngineCamera.X + MysticPlayer.X + 10 - MysticPlayer.Width/2) / 20, (MysticEngineCamera.Y + MysticPlayer.Y - i * 20) / 20) != L'0' && ReadTile((MysticEngineCamera.X + MysticPlayer.X + 10 - MysticPlayer.Width/2) / 20, (MysticEngineCamera.Y + MysticPlayer.Y - i * 20) / 20) != L'%'){
-                        MysticEngineCamera.X += MysticEngineCamera.Speed;
-                        MysticEngineCamera.X += MysticEngineCamera.XAcceleration / 3;
-                    }
-                }
             }
-            else {
 
-                if (ReadTile((MysticEngineCamera.X + MysticPlayer.X) / 20, (MysticEngineCamera.Y + MysticPlayer.Y + 20) / 20) == L'0'){
-                    if(!MysticPlayer.JumpTrigger){
-                        MysticEngineCamera.Y += 4 ;
-                        MysticEngineCamera.Direction = 3;
+            if (MysticEngineCamera.Y % 2 == 1){
+                MysticEngineCamera.Y --;
+            }
+
+            if (!MysticPlayer.JumpTrigger){
+                if (ReadTile((MysticEngineCamera.X + MysticPlayer.X) / 20, (MysticEngineCamera.Y + MysticPlayer.Y + 20) / 20) != L'0'){
+                    if (MysticEngineCamera.Y % 20 == 0){
+                        MysticEngineCamera.Y --;
                     }
                 }
-                
-    
-                if (MysticEngineCamera.Direction == 2){
-                    for (int i = 0 ; i <= MysticPlayer.Height / 20; i ++){
-                        if (ReadTile((MysticEngineCamera.X + MysticPlayer.X + 10 + MysticPlayer.Width/2) / 20, (MysticEngineCamera.Y + MysticPlayer.Y - i*20) / 20) != L'0' && ReadTile((MysticEngineCamera.X + MysticPlayer.X + 10 + MysticPlayer.Width/2) / 20, (MysticEngineCamera.Y + MysticPlayer.Y - i*20) / 20) != L'%' ){
-                            MysticEngineCamera.X -= MysticEngineCamera.Speed;
-                            MysticEngineCamera.X -= MysticEngineCamera.XAcceleration / 3;
-                        }
-                    }
-
-                }
-                
             }
             if (MysticEngineCamera.Y % 2 == 1){
                 MysticEngineCamera.Y --;
             }
 
+
             for (int i = 0 ; i <= WorldData.Height + 20 ; i += 20){
                 if (MysticEngineCamera.Y == i + 2){
                     MysticEngineCamera.Y = i;
+                }
+            }
+
+            if (IsKeyDown(KEY_LEFT) == false && IsKeyDown(KEY_RIGHT) == false && IsKeyDown(KEY_UP) == false && IsKeyDown(KEY_DOWN) == false){
+                if (MysticEngineCamera.XAcceleration != 0){
+                    MysticEngineCamera.XAcceleration --;
+                }
+            }
+            else{
+                if (MysticEngineCamera.XAcceleration != 30){
+                    MysticEngineCamera.XAcceleration ++;
+                }
+            }
+
+            if (MysticEngineCamera.X >= 0){
+                if (IsKeyDown(KEY_LEFT)){
+                    if (WorldData.BackgroundEnabled){
+                        if (WorldData.BackgroundScrollEnabled){
+                            MysticEngine.BackgroundXScroll += MysticEngine.BackgroundXScrollSpeed;
+                        }
+                    }
+                    MysticEngineCamera.X -= MysticEngineCamera.Speed;
+                    MysticEngineCamera.Direction = 4;
+                }
+                if (MysticEngineCamera.Direction == 4)MysticEngineCamera.X -= MysticEngineCamera.XAcceleration / 3;
+            }
+            else {
+                MysticEngineCamera.X = 0;
+            }
+            if (MysticEngineCamera.X <= WorldData.Width * 20){
+                if (IsKeyDown(KEY_RIGHT)){
+                    if (WorldData.BackgroundEnabled){
+                        if (WorldData.BackgroundScrollEnabled){
+                            MysticEngine.BackgroundXScroll -= MysticEngine.BackgroundXScrollSpeed;
+                        }
+                    }
+                    MysticEngineCamera.X += MysticEngineCamera.Speed;
+                    MysticEngineCamera.Direction = 2;
+                }
+                if (MysticEngineCamera.Direction == 2)MysticEngineCamera.X += MysticEngineCamera.XAcceleration / 3;
+            }
+
+            if (MysticEngineCamera.Y >= 0){
+                if (IsKeyDown(KEY_UP) && !MysticPlayer.JumpTrigger && MysticPlayer.IsGrounded){
+                    MysticPlayer.JumpTrigger = true;
+                    MysticPlayer.IsGrounded = false;
+
+                    PlayMusicStream(MysticPlayer.JumpSound);
+                }
+
+                if (MysticPlayer.JumpTrigger){
+                    MysticEngineCamera.Direction = 1;
+                    if (MysticPlayer.JumpCounter >= -10) {
+
+                        MysticEngineCamera.Y -= (MysticPlayer.JumpCounter * abs(MysticPlayer.JumpCounter)) * .05;
+
+                        MysticPlayer.JumpCounter -= 1;
+                    }
+                    else {
+                        MysticEngineCamera.Direction = 3;
+                        MysticPlayer.JumpCounter = 20;
+                        MysticPlayer.JumpTrigger = false;
+                        StopMusicStream(MysticPlayer.JumpSound);
+                    }
+                }
+            }
+            else {
+                MysticEngineCamera.Y = 0;
+            }
+            if (MysticEngineCamera.Y <= WorldData.Height * 20){
+                if (MysticPlayer.JumpTrigger){
+                    if (ReadTile((MysticEngineCamera.X + MysticPlayer.X) / 20, (MysticEngineCamera.Y + MysticPlayer.Y - (MysticPlayer.Height-20)) / 20) != L'0'){
+                        MysticEngineCamera.Y += 4;
+                        MysticEngineCamera.Y += (MysticPlayer.JumpCounter * abs(MysticPlayer.JumpCounter)) * .05;
+                    }
+                }
+                if (MysticEngineCamera.Direction == 4){
+                    if (ReadTile((MysticEngineCamera.X + MysticPlayer.X + 20) / 20, (MysticEngineCamera.Y + MysticPlayer.Y + 20) / 20) == L'0' ){
+                        if(!MysticPlayer.JumpTrigger){
+                            MysticEngineCamera.Y += 8;
+                            MysticEngineCamera.Direction = 3;
+                            
+                        }
+                    }
+                    for (int i = 0 ; i <= MysticPlayer.Height / 20; i ++){
+                        if (ReadTile((MysticEngineCamera.X + MysticPlayer.X + 10 - MysticPlayer.Width/2) / 20, (MysticEngineCamera.Y + MysticPlayer.Y - i * 20) / 20) != L'0' && ReadTile((MysticEngineCamera.X + MysticPlayer.X + 10 - MysticPlayer.Width/2) / 20, (MysticEngineCamera.Y + MysticPlayer.Y - i * 20) / 20) != L'%'){
+                            MysticEngineCamera.X += MysticEngineCamera.Speed;
+                            MysticEngineCamera.X += MysticEngineCamera.XAcceleration / 3;
+                        }
+                    }
+                }
+                else {
+
+                    if (ReadTile((MysticEngineCamera.X + MysticPlayer.X) / 20, (MysticEngineCamera.Y + MysticPlayer.Y + 20) / 20) == L'0'){
+                        if(!MysticPlayer.JumpTrigger){
+                            MysticEngineCamera.Y += 8;
+                            MysticEngineCamera.Direction = 3;
+                            MysticPlayer.IsGrounded = false;
+                        }
+                    }
+                    else {
+                        MysticPlayer.IsGrounded = true;
+                    }
+        
+                    if (MysticEngineCamera.Direction == 2){
+                        for (int i = 0 ; i <= MysticPlayer.Height / 20; i ++){
+                            if (ReadTile((MysticEngineCamera.X + MysticPlayer.X + 10 + MysticPlayer.Width/2) / 20, (MysticEngineCamera.Y + MysticPlayer.Y - i*20) / 20) != L'0' && ReadTile((MysticEngineCamera.X + MysticPlayer.X + 10 + MysticPlayer.Width/2) / 20, (MysticEngineCamera.Y + MysticPlayer.Y - i*20) / 20) != L'%' ){
+                                MysticEngineCamera.X -= MysticEngineCamera.Speed;
+                                MysticEngineCamera.X -= MysticEngineCamera.XAcceleration / 3;
+                            }
+                        }
+
+                    }
+                    
+                }
+                if (MysticEngineCamera.Y % 2 == 1){
+                    MysticEngineCamera.Y --;
+                }
+
+                for (int i = 0 ; i <= WorldData.Height + 20 ; i += 20){
+                    if (MysticEngineCamera.Y == i + 2){
+                        MysticEngineCamera.Y = i;
+                    }
                 }
             }
 
@@ -1223,71 +1321,26 @@ void CoreUpdate(){
         }
         else{
             MysticPlayer.AnimationTicker = 0;
-        }
-
-
-        if (ReadTile((MysticEngineCamera.X + MysticPlayer.X) / 20, (MysticEngineCamera.Y + MysticPlayer.Y - 20) / 20) == L'%'){
-            MysticPlayer.X = (MysticEngine.XResolution / 2) - 20;
-            MysticPlayer.Y = (MysticEngine.YResolution / 2) + MysticPlayer.YOffset;
-            MysticEngineCamera.X = 0;
-            MysticEngineCamera.Y = 0;
-            StopMusicStream(WorldData.Theme);
-            TransitionLevel();      
-            LoadTiles();
-            PlayMusicStream(WorldData.Theme);
-        }
-
-    }
-
-
-    if (MysticEngine.EditMode){
-
-        if (IsMouseButtonDown(0)){
-            if (((GetMouseY() + MysticEngineCamera.Y) / 20) * WorldData.Width + ((GetMouseX() + MysticEngineCamera.X) / 20) != L'&' && ((GetMouseY() + MysticEngineCamera.Y) / 20) * WorldData.Width + ((GetMouseX() + MysticEngineCamera.X) / 20) != L'?' )
-                WorldData.Map[((GetMouseY() + MysticEngineCamera.Y) / 20) * WorldData.Width + ((GetMouseX() + MysticEngineCamera.X) / 20)] = MysticEngine.EditorTile;
-        }
-
-        if (IsKeyPressed(KEY_KP_1)){
-            MysticEngine.EditorTile = L'1';
-        }
-        if (IsKeyPressed(KEY_KP_2)){
-            MysticEngine.EditorTile = L'2';
-        }
-        if (IsKeyPressed(KEY_KP_3)){
-            MysticEngine.EditorTile = L'3';
-        }
-        if (IsKeyPressed(KEY_KP_4)){
-            MysticEngine.EditorTile = L'4';
-        }
-        if (IsKeyPressed(KEY_KP_5)){
-            MysticEngine.EditorTile = L'5';
-        }
-        if (IsKeyPressed(KEY_KP_6)){
-            MysticEngine.EditorTile = L'6';
-        }
-        if (IsKeyPressed(KEY_KP_7)){
-            MysticEngine.EditorTile = L'7';
-        }
-        if (IsKeyPressed(KEY_KP_8)){
-            MysticEngine.EditorTile = L'8';
-        }
-        if (IsKeyPressed(KEY_KP_9)){
-            MysticEngine.EditorTile = L'9';
-        }
-        if (IsKeyPressed(KEY_KP_0)){
-            MysticEngine.EditorTile = L'0';
-        }
-        if (IsKeyPressed(KEY_Z)){
-            MysticEngine.EditorTile = L'Z';
-        }
-        if (IsKeyPressed(KEY_P)){
-            MysticEngine.EditorTile = L'%';
-        }
-        if (IsKeyDown(KEY_LEFT_CONTROL) && IsKeyPressed(KEY_S) ){
-
-            WriteFile(FormatText("GameData/%s/%s.mpak2" , WorldData.MapName , WorldData.MapName) , WorldData.Map);
             
         }
+
+        for(int x = 0; x <= MysticPlayer.Width / 20 ; x++){
+            if (ReadTile((MysticEngineCamera.X + MysticPlayer.X + x * 20) / 20, (MysticEngineCamera.Y + MysticPlayer.Y + 20) / 20) == L'X'){
+
+                PlayFadeEffect();
+
+                MysticPlayer.X = (MysticEngine.XResolution / 2) - 20;
+                MysticPlayer.Y = (MysticEngine.YResolution / 2) + MysticPlayer.YOffset;
+                MysticEngineCamera.X = 0;
+                MysticEngineCamera.Y = 0;
+
+                MysticEngine.BackgroundXScroll = 0;
+
+                ScanPlayerSpawn();    
+
+            }
+        }
+
     }
 
     if (MysticEngine.LevelType != 1){
@@ -1304,3 +1357,19 @@ void CoreUpdate(){
     }
 }
 
+void CustomLoadBehavior(){
+    // All Custom Code Goes Here
+    switch (MysticEngine.LevelId)
+    {
+
+    }
+}
+
+void CustomLevelBehavior(){
+
+    // All Custom Code Goes Here
+    switch (MysticEngine.LevelId)
+    {
+
+    }
+}

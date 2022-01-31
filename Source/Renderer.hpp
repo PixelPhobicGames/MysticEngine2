@@ -1,4 +1,8 @@
+// @ PixelPhobicGames 2022
+
 #include "Data.hpp"
+
+int WorldDraw = false;
 
 void RenderLevel(){
     if (WorldData.BackgroundEnabled){
@@ -38,11 +42,13 @@ void RenderLevel(){
                     break;
                 case L'0':
                     if (!WorldData.BackgroundEnabled)DrawTextureEx(WorldData.Tile0, {((x*20) - MysticEngineCamera.X)* MysticEngine.WindowScale,((y*20) - MysticEngineCamera.Y)* MysticEngine.WindowScale}, 0, MysticEngine.WindowScale, WHITE);
-                    //else {DrawTextureEx(WorldData.Tile0, {((x*20) - MysticEngineCamera.X)* MysticEngine.WindowScale,((y*20) - MysticEngineCamera.Y)* MysticEngine.WindowScale}, 0, MysticEngine.WindowScale, WHITE);}
                     break;
                 default:
-                    DrawRectangle(((x*20) - MysticEngineCamera.X)* MysticEngine.WindowScale,((y*20) - MysticEngineCamera.Y)* MysticEngine.WindowScale, 20* MysticEngine.WindowScale , 20* MysticEngine.WindowScale , PURPLE);
+                    #if (defined(DEBUG))
+                    if (IsKeyDown(KEY_D))DrawRectangle(((x*20) - MysticEngineCamera.X)* MysticEngine.WindowScale,((y*20) - MysticEngineCamera.Y)* MysticEngine.WindowScale, 20* MysticEngine.WindowScale , 20* MysticEngine.WindowScale , PURPLE);
+                    #endif
                     break;
+
             }
         }
     }

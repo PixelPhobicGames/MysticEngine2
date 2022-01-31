@@ -1,7 +1,33 @@
+// @ PixelPhobicGames 2022
 
 #include "Player.hpp"
 
 using namespace std;
+
+#define DEBUG
+
+#define ProGray  CLITERAL(Color){ 33, 33, 33, 255 } 
+
+static Texture2D CustomObjectFrame1;
+static Texture2D CustomObjectFrame2;
+static Texture2D CustomObjectFrame3;
+
+static int CustomVar1 = 0;
+static int CustomVar2 = 0;
+static int CustomVar3 = 0;
+static int CustomVar4 = 0;
+static int CustomVar5 = 0;
+
+
+static int R = 0;
+static int G = 0;
+static int B = 0;
+
+#define FadeColor CLITERAL(Color){ R, G, B, 255 }
+
+static int FadeDirection = 0;
+
+static Font GlobalFont;
 
 typedef struct CoreData
 {
@@ -91,4 +117,29 @@ wchar_t LoadConfigurationFile(const char *Path){
     outfile.open(Path);
     outfile >> Data;
     return Data;
+}
+
+bool GetCollision(int x, int y , int w, int h, int x2 , int y2 , int w2 , int h2){
+    if( y+h <= y2 )
+    {
+        return false;
+    }
+
+    if( y >= y2+h2 )
+    {
+        return false;
+    }
+
+    if( x+w <= x2 )
+    {
+        return false;
+    }
+
+    if( x >= x2+w2 )
+    {
+        return false;
+    }
+
+    return true;
+
 }

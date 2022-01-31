@@ -15,6 +15,10 @@ typedef struct Player{
     int Height;
     int AnimationSpeed;
     int AnimationTicker;
+
+    bool IsGrounded;
+    bool Visable;
+    bool MovementEnabled;
     
     Texture2D AnimationFrame1;
     Texture2D AnimationFrame2;
@@ -37,7 +41,21 @@ typedef struct Player{
     Texture2D AnimationFrame19;
     Texture2D AnimationFrame20;
 
+    Texture2D ShadowTexture;
+
+    Texture2D ProjectileTexture;
+
+    float ProjectileRotation;
+    bool ProjectileTrigger;
+    int ProjectileX; 
+    int ProjectileY;
+    int ProjectileDirection;
+
     int YOffset;
+
+    Music JumpSound;
+    Music LandSound;
+    Music DeathSound;
 }Player;
 
 static Player MysticPlayer;
